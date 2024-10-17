@@ -1,0 +1,15 @@
+image:
+  repository: spetsar/auth
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 3000
+
+env:
+  mongoUri: mongodb://auth-mongo-srv:27017/auth
+  jwtKeySecretName: jwt-secret
+  jwtKey: JWT_KEY

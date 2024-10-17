@@ -1,0 +1,5 @@
+apiVersion: v2
+name: expiration-redis
+description: A Helm chart for the expiration-redis service
+version: 0.1.0
+appVersion: "latest"

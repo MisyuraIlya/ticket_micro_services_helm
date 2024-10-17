@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /api/users/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.services.auth.name }}
+                port:
+                  number: {{ .Values.services.auth.port }}
+          - path: /api/tickets/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.services.tickets.name }}
+                port:
+                  number: {{ .Values.services.tickets.port }}
+          - path: /api/orders/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.services.orders.name }}
+                port:
+                  number: {{ .Values.services.orders.port }}
+          - path: /api/payments/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.services.payments.name }}
+                port:
+                  number: {{ .Values.services.payments.port }}
+          - path: /?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.services.client.name }}
+                port:
+                  number: {{ .Values.services.client.port }}

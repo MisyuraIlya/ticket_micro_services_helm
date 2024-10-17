@@ -1,0 +1,23 @@
+image:
+  repository: spetsar/payments
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+nats:
+  url: 'http://nats-srv:4222'
+  clusterId: ticketing
+  clientIdFieldPath: metadata.name
+
+mongoUri: 'mongodb://payments-mongo-srv:27017/payments'
+
+jwtSecretName: jwt-secret
+jwtSecretKey: JWT_KEY
+
+stripeSecretName: stripe-secret
+stripeSecretKey: STRIPE_KEY
+
+service:
+  port: 3000
+  targetPort: 3000

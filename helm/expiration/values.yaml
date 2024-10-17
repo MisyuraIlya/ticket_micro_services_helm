@@ -1,0 +1,14 @@
+image:
+  repository: spetsar/expiration
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+nats:
+  clientIdFieldPath: metadata.name
+  url: 'nats://nats-srv:4222'
+  clusterId: ticketing
+
+redis:
+  host: expiration-redis-srv

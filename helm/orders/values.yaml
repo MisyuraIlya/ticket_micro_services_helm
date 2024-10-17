@@ -1,0 +1,20 @@
+image:
+  repository: spetsar/orders
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+nats:
+  url: 'http://nats-srv:4222'
+  clusterId: ticketing
+  clientIdFieldPath: metadata.name
+
+mongoUri: 'mongodb://orders-mongo-srv:27017/orders'
+
+jwtSecretName: jwt-secret
+jwtSecretKey: JWT_KEY
+
+service:
+  port: 3000
+  targetPort: 3000
