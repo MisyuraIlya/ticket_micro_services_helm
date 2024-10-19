@@ -1,5 +1,0 @@
-apiVersion: v2
-name: tickets-mongo
-description: A Helm chart for the tickets MongoDB service
-version: 0.1.0
-appVersion: "latest"

@@ -1,5 +1,0 @@
-apiVersion: v2
-name: expiration
-description: A Helm chart for the expiration service
-version: 0.1.0
-appVersion: "latest"

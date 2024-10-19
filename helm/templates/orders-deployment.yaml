@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-deployment
+spec:
+  replicas: {{ .Values.orders.replicaCount }}
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+        - name: orders
+          image: "{{ .Values.orders.image.repository }}:{{ .Values.orders.image.tag }}"
+          imagePullPolicy: {{ .Values.orders.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.orders.service.port }}
+          env:
+            - name: MONGO_URI
+              value: "{{ .Values.orders.mongoUri }}"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.orders.jwtSecretName }}
+                  key: {{ .Values.orders.jwtSecretKey }}

@@ -1,5 +1,0 @@
-apiVersion: v2
-name: orders-mongo
-description: A Helm chart for the orders MongoDB service
-version: 0.1.0
-appVersion: "latest"

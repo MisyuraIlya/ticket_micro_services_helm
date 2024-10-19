@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mongo-deployment
+spec:
+  replicas: {{ .Values.authMongo.replicaCount }}
+  selector:
+    matchLabels:
+      app: auth-mongo
+  template:
+    metadata:
+      labels:
+        app: auth-mongo
+    spec:
+      containers:
+        - name: auth-mongo
+          image: "{{ .Values.authMongo.image.repository }}:{{ .Values.authMongo.image.tag }}"
+          imagePullPolicy: {{ .Values.authMongo.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.authMongo.service.port }}

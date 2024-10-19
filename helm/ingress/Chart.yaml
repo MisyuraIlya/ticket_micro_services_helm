@@ -1,5 +1,0 @@
-apiVersion: v2
-name: ingress
-description: A Helm chart for the ingress service
-version: 0.1.0
-appVersion: "latest"

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-deployment
+spec:
+  replicas: {{ .Values.payments.replicaCount }}
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: "{{ .Values.payments.image.repository }}:{{ .Values.payments.image.tag }}"
+          imagePullPolicy: {{ .Values.payments.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.payments.service.port }}
+          env:
+            - name: MONGO_URI
+              value: "{{ .Values.payments.mongoUri }}"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.payments.jwtSecretName }}
+                  key: {{ .Values.payments.jwtSecretKey }}
+            - name: STRIPE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.payments.stripeSecretName }}
+                  key: {{ .Values.payments.stripeSecretKey }}

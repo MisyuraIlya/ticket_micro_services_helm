@@ -1,5 +1,0 @@
-apiVersion: v2
-name: nats
-description: A Helm chart for the NATS Streaming service
-version: 0.1.0
-appVersion: "0.17.0"

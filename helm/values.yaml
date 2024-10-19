@@ -1,0 +1,192 @@
+# Global Ingress Configuration
+ingress:
+  host: ticketing.dev
+
+# NATS Configuration
+nats:
+  clientIdFieldPath: metadata.name
+  url: 'nats://nats-srv:4222'
+  clusterId: ticketing
+
+# Redis Configuration for Expiration Service
+redis:
+  host: expiration-redis-srv
+
+# Auth Service Configuration
+auth:
+  image:
+    repository: spetsar/auth
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3000
+  env:
+    mongoUri: mongodb://auth-mongo-srv:27017/auth
+    jwtKeySecretName: jwt-secret
+    jwtKey: JWT_KEY
+
+# MongoDB Configuration for Auth
+authMongo:
+  image:
+    repository: mongo
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 27017
+    targetPort: 27017
+
+# Client Service Configuration
+client:
+  image:
+    repository: spetsar/client
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+
+# Expiration Service Configuration
+expiration:
+  image:
+    repository: spetsar/expiration
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+
+# Redis Configuration for Expiration Service
+expirationRedis:
+  image:
+    repository: redis
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 6379
+    targetPort: 6379
+
+# NATS Streaming Configuration
+natsStreaming:
+  image:
+    repository: nats-streaming
+    tag: "0.17.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  ports:
+    clientPort: 4222
+    monitoringPort: 8222
+  args:
+    - "-p"
+    - "{{ .Values.natsStreaming.ports.clientPort }}"
+    - "-m"
+    - "{{ .Values.natsStreaming.ports.monitoringPort }}"
+    - "-hbi"
+    - "5s"
+    - "-hbt"
+    - "5s"
+    - "-hbf"
+    - "2"
+    - "-SD"
+    - "-cid"
+    - "ticketing"
+
+# Orders Service Configuration
+orders:
+  image:
+    repository: spetsar/orders
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 3000
+    targetPort: 3000
+  mongoUri: 'mongodb://orders-mongo-srv:27017/orders'
+  jwtSecretName: jwt-secret
+  jwtSecretKey: JWT_KEY
+
+# MongoDB Configuration for Orders
+ordersMongo:
+  image:
+    repository: mongo
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 27017
+    targetPort: 27017
+
+# Payments Service Configuration
+payments:
+  image:
+    repository: spetsar/payments
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 3000
+    targetPort: 3000
+  mongoUri: 'mongodb://payments-mongo-srv:27017/payments'
+  jwtSecretName: jwt-secret
+  jwtSecretKey: JWT_KEY
+  stripeSecretName: stripe-secret
+  stripeSecretKey: STRIPE_KEY
+
+# MongoDB Configuration for Payments
+paymentsMongo:
+  image:
+    repository: mongo
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 27017
+    targetPort: 27017
+
+# Tickets Service Configuration
+tickets:
+  image:
+    repository: spetsar/tickets
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 3000
+    targetPort: 3000
+  mongoUri: 'mongodb://tickets-mongo-srv:27017/tickets'
+  jwtSecretName: jwt-secret
+  jwtSecretKey: JWT_KEY
+
+# MongoDB Configuration for Tickets
+ticketsMongo:
+  image:
+    repository: mongo
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    port: 27017
+    targetPort: 27017
+
+# Services Configuration
+services:
+  auth:
+    name: auth-srv
+    port: 3000
+  tickets:
+    name: tickets-srv
+    port: 3000
+  orders:
+    name: orders-srv
+    port: 3000
+  payments:
+    name: payments-srv
+    port: 3000
+  client:
+    name: client-srv
+    port: 3000

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-srv
+  labels:
+    app: payments
+spec:
+  type: {{ .Values.payments.service.type }}
+  ports:
+    - port: {{ .Values.payments.service.port }}
+      targetPort: {{ .Values.payments.service.targetPort }}
+  selector:
+    app: payments

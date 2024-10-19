@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-redis-deployment
+spec:
+  replicas: {{ .Values.expirationRedis.replicaCount }}
+  selector:
+    matchLabels:
+      app: expiration-redis
+  template:
+    metadata:
+      labels:
+        app: expiration-redis
+    spec:
+      containers:
+        - name: expiration-redis
+          image: "{{ .Values.expirationRedis.image.repository }}:{{ .Values.expirationRedis.image.tag }}"
+          imagePullPolicy: {{ .Values.expirationRedis.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.expirationRedis.service.port }}

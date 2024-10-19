@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-mongo-deployment
+spec:
+  replicas: {{ .Values.ticketsMongo.replicaCount }}
+  selector:
+    matchLabels:
+      app: tickets-mongo
+  template:
+    metadata:
+      labels:
+        app: tickets-mongo
+    spec:
+      containers:
+        - name: tickets-mongo
+          image: "{{ .Values.ticketsMongo.image.repository }}:{{ .Values.ticketsMongo.image.tag }}"
+          imagePullPolicy: {{ .Values.ticketsMongo.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ticketsMongo.service.port }}

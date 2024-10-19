@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-mongo-srv
+  labels:
+    app: orders-mongo
+spec:
+  type: {{ .Values.ordersMongo.service.type }}
+  ports:
+    - port: {{ .Values.ordersMongo.service.port }}
+      targetPort: {{ .Values.ordersMongo.service.targetPort }}
+  selector:
+    app: orders-mongo

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-deployment
+spec:
+  replicas: {{ .Values.tickets.replicaCount }}
+  selector:
+    matchLabels:
+      app: tickets
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: tickets
+          image: "{{ .Values.tickets.image.repository }}:{{ .Values.tickets.image.tag }}"
+          imagePullPolicy: {{ .Values.tickets.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.tickets.service.port }}
+          env:
+            - name: MONGO_URI
+              value: "{{ .Values.tickets.mongoUri }}"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.tickets.jwtSecretName }}
+                  key: {{ .Values.tickets.jwtSecretKey }}
