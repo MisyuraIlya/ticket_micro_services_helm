@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: expiration-deployment
+  name: {{ .Release.Name }}-expiration-depl
 spec:
   replicas: {{ .Values.expiration.replicaCount }}
   selector:
@@ -16,5 +16,14 @@ spec:
         - name: expiration
           image: "{{ .Values.expiration.image.repository }}:{{ .Values.expiration.image.tag }}"
           imagePullPolicy: {{ .Values.expiration.image.pullPolicy }}
-          ports:
-            - containerPort: 3000
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: {{ .Values.expiration.env.natsClientIdFieldPath }}
+            - name: NATS_URL
+              value: {{ .Values.expiration.env.natsUrl }}
+            - name: NATS_CLUSTER_ID
+              value: {{ .Values.expiration.env.natsClusterId }}
+            - name: REDIS_HOST
+              value: {{ .Values.expiration.env.redisHost }}

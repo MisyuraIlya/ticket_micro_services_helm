@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tickets-deployment
-spec:
+  name: {{ .Release.Name }}-tickets-depl
+spec: 
   replicas: {{ .Values.tickets.replicaCount }}
-  selector:
+  selector: 
     matchLabels:
       app: tickets
-  template:
-    metadata:
+  template: 
+    metadata: 
       labels:
         app: tickets
     spec:
@@ -16,13 +16,19 @@ spec:
         - name: tickets
           image: "{{ .Values.tickets.image.repository }}:{{ .Values.tickets.image.tag }}"
           imagePullPolicy: {{ .Values.tickets.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.tickets.service.port }}
           env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: {{ .Values.tickets.env.natsClientIdFieldPath }}
+            - name: NATS_URL
+              value: {{ .Values.tickets.env.natsUrl }}
+            - name: NATS_CLUSTER_ID
+              value: {{ .Values.tickets.env.natsClusterId }}
             - name: MONGO_URI
-              value: "{{ .Values.tickets.mongoUri }}"
+              value: {{ .Values.tickets.env.mongoUri }}
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.tickets.jwtSecretName }}
-                  key: {{ .Values.tickets.jwtSecretKey }}
+                  name: {{ .Values.tickets.env.jwtKeySecretName }}
+                  key: {{ .Values.tickets.env.jwtKey }}

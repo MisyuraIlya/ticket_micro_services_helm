@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: expiration-redis-deployment
+  name: {{ .Release.Name }}-expiration-redis-depl
 spec:
   replicas: {{ .Values.expirationRedis.replicaCount }}
   selector:
@@ -16,5 +16,3 @@ spec:
         - name: expiration-redis
           image: "{{ .Values.expirationRedis.image.repository }}:{{ .Values.expirationRedis.image.tag }}"
           imagePullPolicy: {{ .Values.expirationRedis.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.expirationRedis.service.port }}

@@ -17,3 +17,6 @@ kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=sk_test_51
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=your_jwt_secret_value -n ticketing
 
 kubectl get all -n ticketing  
+
+helm install ticketing ./helm --namespace ticketing
+

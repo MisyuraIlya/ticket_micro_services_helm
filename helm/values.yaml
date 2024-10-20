@@ -4,8 +4,14 @@ ingress:
 
 # NATS Configuration
 nats:
-  clientIdFieldPath: metadata.name
-  url: 'nats://nats-srv:4222'
+  image:
+    repository: nats-streaming
+    tag: "0.17.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  ports:
+    clientPort: 4222
+    monitoringPort: 8222
   clusterId: ticketing
 
 # Redis Configuration for Expiration Service
@@ -58,6 +64,11 @@ expiration:
     tag: latest
     pullPolicy: IfNotPresent
   replicaCount: 1
+  env:
+    natsClientIdFieldPath: metadata.name
+    natsUrl: 'http://ticketing-nats-srv:4222'
+    natsClusterId: ticketing
+    redisHost: expiration-redis-srv
 
 # Redis Configuration for Expiration Service
 expirationRedis:
@@ -67,7 +78,6 @@ expirationRedis:
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
-    type: ClusterIP
     port: 6379
     targetPort: 6379
 
@@ -81,20 +91,6 @@ natsStreaming:
   ports:
     clientPort: 4222
     monitoringPort: 8222
-  args:
-    - "-p"
-    - "{{ .Values.natsStreaming.ports.clientPort }}"
-    - "-m"
-    - "{{ .Values.natsStreaming.ports.monitoringPort }}"
-    - "-hbi"
-    - "5s"
-    - "-hbt"
-    - "5s"
-    - "-hbf"
-    - "2"
-    - "-SD"
-    - "-cid"
-    - "ticketing"
 
 # Orders Service Configuration
 orders:
@@ -106,9 +102,13 @@ orders:
   service:
     port: 3000
     targetPort: 3000
-  mongoUri: 'mongodb://orders-mongo-srv:27017/orders'
-  jwtSecretName: jwt-secret
-  jwtSecretKey: JWT_KEY
+  env:
+    natsClientIdFieldPath: metadata.name
+    natsUrl: 'http://ticketing-nats-srv:4222'
+    natsClusterId: ticketing
+    mongoUri: 'mongodb://orders-mongo-srv:27017/orders'
+    jwtKeySecretName: jwt-secret
+    jwtKey: JWT_KEY
 
 # MongoDB Configuration for Orders
 ordersMongo:
@@ -131,11 +131,15 @@ payments:
   service:
     port: 3000
     targetPort: 3000
-  mongoUri: 'mongodb://payments-mongo-srv:27017/payments'
-  jwtSecretName: jwt-secret
-  jwtSecretKey: JWT_KEY
-  stripeSecretName: stripe-secret
-  stripeSecretKey: STRIPE_KEY
+  env:
+    natsClientIdFieldPath: metadata.name
+    natsUrl: 'http://ticketing-nats-srv:4222'
+    natsClusterId: ticketing
+    mongoUri: 'mongodb://payments-mongo-srv:27017/payments'
+    jwtKeySecretName: jwt-secret
+    jwtKey: JWT_KEY
+    stripeKeySecretName: stripe-secret
+    stripeKey: STRIPE_KEY
 
 # MongoDB Configuration for Payments
 paymentsMongo:
@@ -158,10 +162,13 @@ tickets:
   service:
     port: 3000
     targetPort: 3000
-  mongoUri: 'mongodb://tickets-mongo-srv:27017/tickets'
-  jwtSecretName: jwt-secret
-  jwtSecretKey: JWT_KEY
-
+  env:
+    natsClientIdFieldPath: metadata.name
+    natsUrl: 'http://ticketing-nats-srv:4222'
+    natsClusterId: ticketing
+    mongoUri: 'mongodb://tickets-mongo-srv:27017/tickets'
+    jwtKeySecretName: jwt-secret
+    jwtKey: JWT_KEY
 # MongoDB Configuration for Tickets
 ticketsMongo:
   image:

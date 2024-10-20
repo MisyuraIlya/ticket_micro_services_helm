@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payments-deployment
+  name: {{ .Release.Name }}-payments-depl
 spec:
   replicas: {{ .Values.payments.replicaCount }}
   selector:
@@ -16,18 +16,24 @@ spec:
         - name: payments
           image: "{{ .Values.payments.image.repository }}:{{ .Values.payments.image.tag }}"
           imagePullPolicy: {{ .Values.payments.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.payments.service.port }}
           env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: {{ .Values.payments.env.natsClientIdFieldPath }}
+            - name: NATS_URL
+              value: {{ .Values.payments.env.natsUrl }}
+            - name: NATS_CLUSTER_ID
+              value: {{ .Values.payments.env.natsClusterId }}
             - name: MONGO_URI
-              value: "{{ .Values.payments.mongoUri }}"
+              value: {{ .Values.payments.env.mongoUri }}
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.payments.jwtSecretName }}
-                  key: {{ .Values.payments.jwtSecretKey }}
+                  name: {{ .Values.payments.env.jwtKeySecretName }}
+                  key: {{ .Values.payments.env.jwtKey }}
             - name: STRIPE_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.payments.stripeSecretName }}
-                  key: {{ .Values.payments.stripeSecretKey }}
+                  name: {{ .Values.payments.env.stripeKeySecretName }}
+                  key: {{ .Values.payments.env.stripeKey }}

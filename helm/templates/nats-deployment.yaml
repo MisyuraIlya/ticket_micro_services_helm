@@ -1,28 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-depl
-  labels:
-    app: {{ .Chart.Name }}
+  name: {{ .Release.Name }}-nats-depl
 spec:
-  replicas: {{ .Values.natsStreaming.replicaCount }}
+  replicas: {{ .Values.nats.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: nats
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        app: nats
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.natsStreaming.image.repository }}:{{ .Values.natsStreaming.image.tag }}"
-          imagePullPolicy: {{ .Values.natsStreaming.image.pullPolicy }}
+        - name: nats
+          image: "{{ .Values.nats.image.repository }}:{{ .Values.nats.image.tag }}"
+          imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
           args:
             - "-p"
-            - "{{ .Values.natsStreaming.ports.clientPort }}"
+            - "{{ .Values.nats.ports.clientPort }}"
             - "-m"
-            - "{{ .Values.natsStreaming.ports.monitoringPort }}"
+            - "{{ .Values.nats.ports.monitoringPort }}"
             - "-hbi"
             - "5s"
             - "-hbt"
@@ -31,4 +29,4 @@ spec:
             - "2"
             - "-SD"
             - "-cid"
-            - "ticketing"
+            - "{{ .Values.nats.clusterId }}"

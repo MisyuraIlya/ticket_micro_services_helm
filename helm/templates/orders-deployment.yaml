@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-deployment
+  name: {{ .Release.Name }}-orders-depl
 spec:
   replicas: {{ .Values.orders.replicaCount }}
   selector:
@@ -16,13 +16,19 @@ spec:
         - name: orders
           image: "{{ .Values.orders.image.repository }}:{{ .Values.orders.image.tag }}"
           imagePullPolicy: {{ .Values.orders.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.orders.service.port }}
           env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: {{ .Values.orders.env.natsClientIdFieldPath }}
+            - name: NATS_URL
+              value: {{ .Values.orders.env.natsUrl }}
+            - name: NATS_CLUSTER_ID
+              value: {{ .Values.orders.env.natsClusterId }}
             - name: MONGO_URI
-              value: "{{ .Values.orders.mongoUri }}"
+              value: {{ .Values.orders.env.mongoUri }}
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.orders.jwtSecretName }}
-                  key: {{ .Values.orders.jwtSecretKey }}
+                  name: {{ .Values.orders.env.jwtKeySecretName }}
+                  key: {{ .Values.orders.env.jwtKey }}
